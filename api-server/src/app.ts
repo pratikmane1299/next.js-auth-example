@@ -5,10 +5,11 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 
 import { connectToDb } from './db';
-import { generateTokens } from "./utils/jwt";
+import { generateTokens, RefreshTokenData } from "./utils/jwt";
 import { isAuthenticated } from './middlewares/auth';
 
 import User from './models/user';
+import { verify } from 'jsonwebtoken';
 
 const PORT = process.env.PORT || '4242';
 
@@ -16,7 +17,7 @@ export default async function main() {
 	const app = express();
 
 	app.use(cors());
-	app.use(morgan('combined'));
+	app.use(morgan('dev', {immediate: true}));
 	app.use(helmet());
 	app.use(express.json());
 
@@ -142,6 +143,34 @@ export default async function main() {
 			}
     }
   );
+
+	app.post('/api/v1/refreshTokens', async (req: Request, res: Response) => {
+		const refreshToken = req?.headers["refreshtoken"];
+
+		if (typeof refreshToken !== 'string') {
+			return res.status(401).json({ message: "Unathorized" });
+		}
+
+		try {
+			const data = <RefreshTokenData>(
+        verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || "")
+      );
+
+			const user = await User.findById(data?.id);
+
+			// check if user exists...
+			if (!user) {
+				return res.status(401).json({ message: "Unathorized" });
+			}
+
+			const tokens = await generateTokens(user);
+
+			return res.json({ success: true, tokens });
+
+		} catch (error) {
+			return res.status(401).json({ success: false, message: "Unathorized" });
+		}
+	});
 
 	app.listen(PORT, () => console.log(`server running on port http://localhost:${PORT}/`))
 }

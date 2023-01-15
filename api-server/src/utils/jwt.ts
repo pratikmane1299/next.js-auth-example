@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction, RequestHandler } from "express";
-import { sign, verify } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 
 import User from "../models/user";
 
@@ -7,9 +6,9 @@ export type AccessTokenData = {
 	id: string;
 }
 
-// type RefreshTokenData = {
-// 	id: string;
-// }
+export type RefreshTokenData = {
+  id: string;
+};
 
 export const generateTokens = async (
   user: any
@@ -34,4 +33,3 @@ export const generateTokens = async (
 
   return { accessToken, refreshToken };
 };
-
