@@ -3,12 +3,20 @@ import bcrypt from 'bcryptjs';
 import mongoose from "../db";
 
 interface IUser {
+	username: string;
 	email: string;
-	password: string;
+	password?: string;
 	avatarUrl?: string;
 	verified?: boolean;
 	refreshToken?: string;
 	accessToken?: string;
+	github?: {
+		id: number;
+		enabled: boolean;
+		username: string;
+		link: string;
+		accessToken: string;
+	}
 };
 
 interface IUserMethods {
@@ -19,12 +27,14 @@ interface IUserMethods {
 type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
 
 const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
-	email: { type: String, required: true },
-	password: { type: String, required: true },
-	avatarUrl: { type: String, required: false },
-	verified: { type: Boolean, default: false },
-	accessToken: { type: String, required: false },
-	refreshToken: { type: String, required: false },
+  username: { type: String, required: false },
+  email: { type: String, required: true },
+  password: { type: String, required: false },
+  avatarUrl: { type: String, required: false },
+  verified: { type: Boolean, default: false },
+  accessToken: { type: String, required: false },
+  refreshToken: { type: String, required: false },
+  github: { type: Object, required: false },
 });
 
 userSchema.pre('save', async function () {
@@ -33,7 +43,7 @@ userSchema.pre('save', async function () {
 
 userSchema.method('generateHash', async function () {
 	const saltRounds = 10;
-	return bcrypt.hash(this.password, saltRounds);
+	return bcrypt.hash(this.password || '', saltRounds);
 });
 
 userSchema.method('comparePasswords', function(password: string) {
