@@ -1,52 +1,46 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { NextPageContext } from "next";
-import {
-  getCsrfToken,
-  signIn,
-  getProviders,
-  useSession,
-} from "next-auth/react";
-import { useRouter } from "next/router";
+
+import React, { ChangeEvent, useEffect, useState } from "react";import { NextPageContext } from "next";
 import { Provider } from "next-auth/providers";
+import { getCsrfToken, getProviders, signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
-function Login({
+function Signup({
   csrfToken,
   providers,
 }: {
   csrfToken: string;
   providers: Provider[];
 }) {
-  const { status } = useSession();
-  const [loginForm, setLoginForm] = useState({
+	const router = useRouter();
+	const {status} = useSession();
+  const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
   });
   const [error, setError] = useState("");
 
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/profile");
-    }
-  }, [status]);
+	useEffect(() => {
+		if (status === 'authenticated'){
+			router.push("/profile");
+		}
+	}, [status]);
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
 
-    setLoginForm((prev) => ({
+    setSignUpForm((prev) => ({
       ...prev,
       [name]: value,
     }));
   }
 
-  async function handleOnLogin(e: FormEvent) {
+	async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
 
-    const res = await signIn("credentials", {
-      email: loginForm.email,
-      password: loginForm.password,
+    const res = await signIn("signup", {
+      email: signUpForm.email,
+      password: signUpForm.password,
       csrfToken,
       redirect: false,
     });
@@ -90,7 +84,7 @@ function Login({
               return (
                 <div key={provider.name}>
                   <button onClick={() => signIn(provider.id)}>
-                    Sign in with {provider.name}
+                    Sign up with {provider.name}
                   </button>
                 </div>
               );
@@ -98,7 +92,7 @@ function Login({
           })}
         </div>
 
-        <form onSubmit={handleOnLogin}>
+        <form onSubmit={handleSignup}>
           <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
           <label htmlFor="email">
             Email
@@ -106,7 +100,7 @@ function Login({
               id="email"
               name="email"
               type="text"
-              value={loginForm.email}
+              value={signUpForm.email}
               onChange={handleChange}
             />
           </label>
@@ -116,17 +110,18 @@ function Login({
               id="password"
               name="password"
               type="password"
-              value={loginForm.password}
+              value={signUpForm.password}
               onChange={handleChange}
             />
           </label>
-          <button type="submit">Login</button>
+          <button type="submit">Sign Up</button>
         </form>
 
         {error && <span>{error}</span>}
+
         <div>
           <span>
-            Don't have an account ?<Link href={"/signup"}>Signup first</Link>
+            Already have an account ?<Link href={"/login"}>Login instead</Link>
           </span>
         </div>
       </div>
@@ -143,4 +138,4 @@ export async function getServerSideProps(context: NextPageContext) {
   };
 }
 
-export default Login;
+export default Signup;

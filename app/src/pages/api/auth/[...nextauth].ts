@@ -1,6 +1,7 @@
 import nextAuth, { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
+import { signOut } from "next-auth/react";
 
 function getCurrentUser(token: string) {
 	return fetch(`${process.env.NEXT_PUBLIC_CUSTOM_SERVER_URL}/api/v1/me` || "", {
@@ -9,7 +10,7 @@ function getCurrentUser(token: string) {
       "AccessToken": token,
 			"Content-Type": "application/json",
     },
-  }).then((res) => res.json());
+  });
 }
 
 function githubAuth(account: any) {
@@ -25,12 +26,53 @@ function githubAuth(account: any) {
   ).then((res) => res.json());
 }
 
+function refreshToken(refreshToken: string) {
+	return fetch(
+    `${process.env.NEXT_PUBLIC_CUSTOM_SERVER_URL}/api/v1/refreshTokens`,
+    {
+      headers: {
+        RefreshToken: refreshToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID || "",
       clientSecret: process.env.GITHUB_SECRET || "",
     }),
+		CredentialsProvider({
+			id: 'signup',
+			name: 'SignUp',
+			credentials: {
+				email: { label: "Email", type: "email", placeholder: "enter email" },
+        password: { label: "Password", type: "password" },
+			},
+			async authorize(credentials, req) {
+				// call signup api...
+				const res = await fetch(
+          `${process.env.NEXT_PUBLIC_CUSTOM_SERVER_URL}/api/v1/signup` || "",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              email: credentials?.email,
+              password: credentials?.password,
+            }),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const data = await res.json();
+
+        if (res.ok) {
+          return data;
+        } else {
+          throw new Error(data?.message);
+        }
+			},
+		}),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -84,18 +126,54 @@ export const authOptions: NextAuthOptions = {
         token.accessToken = user?.accessToken;
         token.refreshToken = user?.refreshToken;
       }
-      return token;
+      return Promise.resolve(token);
     },
     async session({ session, token }: { session: any; token: any }) {
       // fetch user here...
-      const res = await getCurrentUser(token?.accessToken);
-			
-      //TODO: call refresh tokens api if res is unauthorized
+			try {
+				const res = await getCurrentUser(token?.accessToken);
 
-      session.accessToken = token?.accessToken;
-      session.user = res?.user || {};
+				const data = await res.json();
+				if (res.status > 199 && res.status <= 299) {
+					session.accessToken = token?.accessToken;
+					session.user = data?.user || {};
 
-      return session;
+				} else if (res.status === 401) {
+					
+					const tokensRes = await refreshToken(token?.refreshToken);
+
+					
+					if (tokensRes?.status > 199 && tokensRes?.status <= 299) {
+						const tokenData = await tokensRes.json();
+
+						const userRes = await getCurrentUser(tokenData?.tokens.accessToken);
+						const userData = await userRes.json();
+						
+						session.accessToken = tokenData?.tokens.accessToken;
+						session.refreshToken = tokenData?.tokens.refreshToken;
+						session.user = userData.user;
+					}
+				}
+
+				// // const res = await fetch(`${process.env.NEXT_PUBLIC_CUSTOM_SERVER_URL}/api/v1/me` || "", {
+        // //   method: "GET",
+        // //   headers: {
+        // //     AccessToken: token?.accessToken,
+        // //     "Content-Type": "application/json",
+        // //   },
+        // // });
+
+				// // const data = await res.json();
+
+				
+				// return session;
+				// const res = await getCurrentUser(token?.accessToken);
+			} catch (error) {
+				session = null;
+				console.log('error - ', error);
+			}
+
+			return Promise.resolve(session);
     },
   },
   pages: {

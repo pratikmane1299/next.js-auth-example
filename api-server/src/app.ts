@@ -11,6 +11,8 @@ import { isAuthenticated } from "./middlewares/auth";
 import User from "./models/user";
 import { verify } from "jsonwebtoken";
 import { getGithubEmail, getGithubUser } from "./utils/github";
+import { getAvatarUrl } from "./utils/avatar";
+import { generateUsername } from "./utils/utils";
 
 const PORT = process.env.PORT || "4242";
 
@@ -65,9 +67,14 @@ export default async function main() {
       });
     }
 
+		const avatarUrl = getAvatarUrl(email);
+		const username = generateUsername(email.split("@")[0]);
+
     const user = await User.create({
       email,
+			username,
       password,
+      avatarUrl,
     });
 
     const tokens = await generateTokens(user);
@@ -159,7 +166,7 @@ export default async function main() {
     }
   );
 
-  app.post("/api/v1/refreshTokens", async (req: Request, res: Response) => {
+  app.get("/api/v1/refreshTokens", async (req: Request, res: Response) => {
     const refreshToken = req?.headers["refreshtoken"];
 
     if (typeof refreshToken !== "string") {
@@ -244,6 +251,21 @@ export default async function main() {
       tokens,
     });
   });
+
+	app.post(
+    "/api/v1/auth/logout",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const userId = req.userId;
+
+			await User.findByIdAndUpdate(userId, {
+        accessToken: null,
+        refreshToken: null,
+      });
+
+			res.json({ success: true });
+    }
+  );
 
   app.listen(PORT, () =>
     console.log(`server running on port http://localhost:${PORT}/`)

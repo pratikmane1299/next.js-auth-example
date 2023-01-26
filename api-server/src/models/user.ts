@@ -6,8 +6,11 @@ interface IUser {
 	username: string;
 	email: string;
 	password?: string;
+	firstname?: string;
+	lastname?: string;
 	avatarUrl?: string;
 	verified?: boolean;
+	onboardingDone?: boolean;
 	refreshToken?: string;
 	accessToken?: string;
 	github?: {
@@ -30,11 +33,14 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
   username: { type: String, required: false },
   email: { type: String, required: true },
   password: { type: String, required: false },
+  firstname: { type: String, required: false, default: "" },
+  lastname: { type: String, required: false, default: "" },
   avatarUrl: { type: String, required: false },
   verified: { type: Boolean, default: false },
   accessToken: { type: String, required: false },
   refreshToken: { type: String, required: false },
   github: { type: Object, required: false },
+  onboardingDone: { type: Boolean, required: false, default: false },
 });
 
 userSchema.pre('save', async function () {
