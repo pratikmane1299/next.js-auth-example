@@ -267,6 +267,42 @@ export default async function main() {
     }
   );
 
+	app.post<
+    {},
+    {},
+    {
+      firstname: string;
+      lastname: string;
+      bio: string;
+      tags: string[];
+      socials: { instagram: string; twitter: string; facebook: string };
+    }
+  >(
+    "/api/v1/save-onboarding",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const userId = req.userId;
+      const { firstname, lastname, bio, tags, socials = {} } = req.body;
+    
+			try {
+				await User.findByIdAndUpdate(userId, {
+          $set: {
+            firstname,
+            lastname,
+            bio,
+            tags,
+            socials,
+						onboardingDone: true,
+          },
+        });
+
+				return res.json({ success: true });
+			} catch (error) {
+				return res.json({ success: false });
+			}
+    }
+  );
+
   app.listen(PORT, () =>
     console.log(`server running on port http://localhost:${PORT}/`)
   );

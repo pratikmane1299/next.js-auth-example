@@ -1,15 +1,34 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
-import { SessionProvider } from "next-auth/react"
-import type { Session } from 'next-auth';
+import "@/styles/globals.css";
+import { SessionProvider } from "next-auth/react";
+import { NextPage } from "next";
+import type { AppProps } from "next/app";
+import type { Session } from "next-auth";
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps<{ session: Session }>) {
+import AuthGuard from "@/components/AuthGuard";
+
+export type NextApplicationPage<P = any, IP = P> = NextPage<P, IP> & {
+  requireAuth?: boolean;
+};
+
+export default function App(
+  props: AppProps<{
+    session: Session;
+  }>
+) {
+  const {
+    pageProps: { session, ...pageProps },
+    Component,
+  }: { Component: NextApplicationPage; pageProps: any } = props;
+
   return (
     <SessionProvider session={session}>
+      {/* {Component.requireAuth ? (
+        <AuthGuard>
+          <Component {...pageProps} />
+        </AuthGuard>
+      ) : ( */}
       <Component {...pageProps} />
+      {/* )} */}
     </SessionProvider>
   );
 }

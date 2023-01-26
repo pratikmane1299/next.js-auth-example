@@ -3,23 +3,30 @@ import bcrypt from 'bcryptjs';
 import mongoose from "../db";
 
 interface IUser {
-	username: string;
-	email: string;
-	password?: string;
-	firstname?: string;
-	lastname?: string;
-	avatarUrl?: string;
-	verified?: boolean;
-	onboardingDone?: boolean;
-	refreshToken?: string;
-	accessToken?: string;
-	github?: {
-		id: number;
-		enabled: boolean;
-		username: string;
-		link: string;
-		accessToken: string;
-	}
+  username: string;
+  email: string;
+  password?: string;
+  firstname?: string;
+  lastname?: string;
+  avatarUrl?: string;
+  bio?: string;
+  tags?: string[];
+  verified?: boolean;
+  socials?: {
+    twitter?: string;
+    instagram?: string;
+    facebook?: string;
+  };
+  onboardingDone?: boolean;
+  refreshToken?: string;
+  accessToken?: string;
+  github?: {
+    id: number;
+    enabled: boolean;
+    username: string;
+    link: string;
+    accessToken: string;
+  };
 };
 
 interface IUserMethods {
@@ -36,6 +43,13 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
   firstname: { type: String, required: false, default: "" },
   lastname: { type: String, required: false, default: "" },
   avatarUrl: { type: String, required: false },
+  bio: { type: String, required: false, maxlength: 200 },
+  tags: { type: Array, required: false, default: [] },
+  socials: {
+    type: Object,
+    required: false,
+    default: { twitter: "", instagram: "", facebook: "" },
+  },
   verified: { type: Boolean, default: false },
   accessToken: { type: String, required: false },
   refreshToken: { type: String, required: false },

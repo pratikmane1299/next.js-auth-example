@@ -17,7 +17,7 @@ function Login({
   csrfToken: string;
   providers: Provider[];
 }) {
-  const { status } = useSession();
+  const { status, data } = useSession();
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
@@ -28,7 +28,11 @@ function Login({
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/profile");
+			if (!data?.user?.onboardingDone) {
+				router.push("/onboarding");
+			} else {
+				router.push("/profile");
+			}
     }
   }, [status]);
 
@@ -55,7 +59,7 @@ function Login({
       return setError(res?.error);
     }
 
-    router.push("/profile");
+    // router.push("/profile");
   }
 
   return (

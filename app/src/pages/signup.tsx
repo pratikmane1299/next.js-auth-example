@@ -13,7 +13,7 @@ function Signup({
   providers: Provider[];
 }) {
 	const router = useRouter();
-	const {status} = useSession();
+	const { status, data } = useSession();
   const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
@@ -21,10 +21,14 @@ function Signup({
   const [error, setError] = useState("");
 
 	useEffect(() => {
-		if (status === 'authenticated'){
-			router.push("/profile");
-		}
-	}, [status]);
+    if (status === "authenticated") {
+			if (!data?.user?.onboardingDone) {
+				router.push("/onboarding");
+			} else {
+				router.push("/profile");
+			}
+    }
+  }, [status]);
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -49,7 +53,7 @@ function Signup({
       return setError(res?.error);
     }
 
-    router.push("/profile");
+    // router.push("/profile");
   }
 
   return (

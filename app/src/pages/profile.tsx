@@ -5,7 +5,7 @@ import { authOptions } from "./api/auth/[...nextauth]";
 
 import Layout from "@/ui/Layout";
 
-function Profile({ user }: { user: any }) {
+const Profile = ({ user }: { user: any }) => {
   return (
     <Layout>
       <div
@@ -46,6 +46,8 @@ function Profile({ user }: { user: any }) {
   );
 }
 
+Profile.requireAuth = true;
+
 export async function getServerSideProps(context: NextPageContext) {
   try {
     const session = await unstable_getServerSession(
@@ -63,9 +65,18 @@ export async function getServerSideProps(context: NextPageContext) {
       };
     }
 
+		if (!session.user?.onboardingDone) {
+			return {
+        redirect: {
+          destination: "/onboarding",
+          permanent: false,
+        },
+      };
+		}
+
     return {
       props: {
-        user: session.user,
+        user: (session && session.user) || {},
       },
     };
   } catch (error) {
