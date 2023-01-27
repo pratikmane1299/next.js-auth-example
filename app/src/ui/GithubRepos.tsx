@@ -12,14 +12,18 @@ function GithubRepos({ repos }: { repos: any[] }) {
   return (
     <div>
       <h5 className="text-gray-700 font-medium text-lg mb-4">Repositories</h5>
-      <div className="flex flex-col sm:grid sm:grid-cols-2 sm:gap-6">
+      <div className="flex flex-col space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6">
         {reposToShow.map((repo) => (
-          <GithubRepoCard repo={repo} />
+          <GithubRepoCard key={repo.id} repo={repo} />
         ))}
       </div>
 
       <div className="mt-4 w-full flex justify-center">
-        <Button size={'xs'} color="light" onClick={() => setShowMore((prev) => !prev)}>
+        <Button
+          size={"xs"}
+          color="light"
+          onClick={() => setShowMore((prev) => !prev)}
+        >
           show {showMore ? "less" : "more"}
         </Button>
       </div>

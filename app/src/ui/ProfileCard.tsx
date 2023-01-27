@@ -6,6 +6,7 @@ import ProfileTags from "./ProfileTags";
 import TwitterIcon from "./TwitterIcon";
 import InstagramIcon from "./InstagramIcon";
 import ExternalLink from "@/components/ExternalLink";
+import { formatDate } from "@/utils";
 
 function ProfileCard({ user, onEditProfile }: { user: any, onEditProfile: () => void;}) {
   return (
@@ -48,7 +49,10 @@ function ProfileCard({ user, onEditProfile }: { user: any, onEditProfile: () => 
               <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2">
                 <span className="flex items-center text-gray-700 font-medium text-xs">
                   <CalendarIcon className="h-5 w-5 mr-1" />
-                  Joined 24 Aug 2023
+									Joined{' '}
+                  {formatDate(
+                    user?.createdAt ? new Date(user?.createdAt) : new Date()
+                  )}
                 </span>
 
                 {user?.website && (

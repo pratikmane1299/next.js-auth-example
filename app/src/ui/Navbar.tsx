@@ -7,6 +7,8 @@ import axios from "../lib/axios";
 
 import { Avatar, Dropdown, Navbar as FBNavbar } from "flowbite-react";
 import Container from "./Container";
+import ExternalLink from "@/components/ExternalLink";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 
 function Navbar() {
   const router = useRouter();
@@ -30,7 +32,12 @@ function Navbar() {
       <Container>
         <div className="py-2 flex justify-between border-b border-gray-200">
           <FBNavbar.Brand>
-            <img alt="Full stack auth" />
+            <img
+              alt="Full stack auth"
+              src="/next-auth.jpeg"
+              className="w-[35px] mr-2"
+            />
+            Next Auth | External backend
           </FBNavbar.Brand>
           {session?.user ? (
             <div className="flex md:order-2">
@@ -43,7 +50,7 @@ function Navbar() {
                     alt={`${session?.user?.firstname} ${session?.user?.lastname}`}
                     img={session?.user?.avatarUrl}
                     rounded={true}
-										className="p-0 border-2 border-pink-600 rounded-full"
+                    className="p-0 border-2 border-pink-600 rounded-full"
                   />
                 }
               >
@@ -61,43 +68,19 @@ function Navbar() {
               </Dropdown>
             </div>
           ) : (
-						<>
-							<FBNavbar.Toggle />
-							<FBNavbar.Collapse>
-								<FBNavbar.Link href="/login">Login</FBNavbar.Link>
-								<FBNavbar.Link href="/signup">Sign Up</FBNavbar.Link>
-							</FBNavbar.Collapse>
-						</>
+            <>
+              <ExternalLink
+                href="https://github.com/pratikmane1299"
+                className="hover:underline cursor-pointer text-base font-normal flex items-center"
+              >
+                <ArrowTopRightOnSquareIcon className="h-5 w-5 mr-2" />
+                Github
+              </ExternalLink>
+            </>
           )}
         </div>
       </Container>
     </FBNavbar>
-    // <div
-    //   style={{
-    //     width: "100%",
-    //     display: "flex",
-    //     justifyContent: "space-between",
-    //     padding: "1rem 2rem",
-    //     borderBottom: "1px solid #b2b2b2",
-    //   }}
-    // >
-    //   <h6 style={{ fontSize: "20px" }}>Next Auth | Custom Backend example</h6>
-
-    //   <div>
-    //     {session?.user ? (
-    //       <a href="#" onClick={handleLogout}>
-    //         Logout
-    //       </a>
-    //     ) : (
-    //       <>
-    //         <Link href={"/login"} style={{ marginRight: "1rem" }}>
-    //           Login
-    //         </Link>
-    //         <Link href={"/signup"}>Register</Link>
-    //       </>
-    //     )}
-    //   </div>
-    // </div>
   );
 }
 
