@@ -2,6 +2,7 @@ import React from "react";
 import { CalendarIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 
 import { Avatar, Button } from "flowbite-react";
+import ProfileTags from "./ProfileTags";
 
 function ProfileCard({ user }: { user: any }) {
   return (
@@ -59,9 +60,9 @@ function ProfileCard({ user }: { user: any }) {
                     www.website.com
                   </a>
                 </span>
-
-
               </div>
+
+              {user?.tags?.length > 0 && <ProfileTags tags={user?.tags} />}
             </div>
 
             <Button className="mt-2 md:mt-0">Edit Profile</Button>

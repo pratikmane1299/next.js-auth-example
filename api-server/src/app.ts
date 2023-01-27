@@ -274,7 +274,7 @@ export default async function main() {
       firstname: string;
       lastname: string;
       bio: string;
-      tags: string[];
+      tags: string;
 			website: string;
       socials: { instagram: string; twitter: string; facebook: string };
     }
@@ -291,7 +291,7 @@ export default async function main() {
             firstname,
             lastname,
             bio,
-            tags,
+            tags: tags?.split(","),
             socials,
             website,
             onboardingDone: true,
@@ -330,6 +330,42 @@ export default async function main() {
 			}
 		}
   );
+
+	app.patch<
+    any,
+    any,
+    {
+      firstname: string;
+      lastname: string;
+      bio: string;
+      website: string;
+			tags: string;
+      socials: {
+        twitter: string;
+        instagram: string;
+      };
+    }
+  >("/api/v1/update-profile", isAuthenticated, async (req: Request, res: Response) => {
+		const userId = req.userId;
+		const { firstname, lastname, bio, website, tags, socials = {} } = req.body;
+
+		try {
+			await User.findByIdAndUpdate(userId, {
+        $set: {
+          firstname,
+          lastname,
+          bio,
+          website,
+          socials,
+          tags: tags?.split(","),
+        },
+      });
+
+			res.json({ success: true });
+		} catch (error) {
+			return res.json({ success: false });
+		}
+	});
 
   app.listen(PORT, () =>
     console.log(`server running on port http://localhost:${PORT}/`)

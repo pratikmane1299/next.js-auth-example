@@ -5,7 +5,7 @@ import Card from "./Card";
 function PaddedCard({ children }: PropsWithChildren) {
   return (
     <Card>
-      <PaddedCard>{children}</PaddedCard>
+      <div className="p-4">{children}</div>
     </Card>
   );
 }

@@ -23,6 +23,7 @@ function OnBoarding({ csrfToken }: { csrfToken: string }) {
     lastname: "",
     bio: "",
     website: "",
+		tags: "",
     socials: {
       twitter: "",
       instagram: "",
@@ -122,6 +123,20 @@ function OnBoarding({ csrfToken }: { csrfToken: string }) {
                 required={true}
                 rows={4}
                 value={onboardingForm.bio}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="tags">Tags</Label>
+              </div>
+              <TextInput
+                id="tags"
+                name="tags"
+                placeholder="www.mycoolsite.com"
+                helperText="Enter tags separated by comma"
+                value={onboardingForm.tags}
                 onChange={handleChange}
               />
             </div>
