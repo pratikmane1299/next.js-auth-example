@@ -37,10 +37,6 @@ const OnBoarding = ({ csrfToken }: { csrfToken: string }) => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     const { name, value } = e.target;
-    console.log({
-      name,
-      value,
-    });
 
     setOnBoardingForm((prev) => ({
       ...prev,

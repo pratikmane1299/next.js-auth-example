@@ -3,6 +3,8 @@ import { SessionProvider } from "next-auth/react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import AuthGuard from "@/components/AuthGuard";
 
@@ -29,6 +31,7 @@ export default function App(
       ) : (
         <Component {...pageProps} />
       )}
+			<ToastContainer />
     </SessionProvider>
   );
 }

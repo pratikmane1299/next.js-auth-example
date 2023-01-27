@@ -7,7 +7,7 @@ import TwitterIcon from "./TwitterIcon";
 import InstagramIcon from "./InstagramIcon";
 import ExternalLink from "@/components/ExternalLink";
 
-function ProfileCard({ user }: { user: any }) {
+function ProfileCard({ user, onEditProfile }: { user: any, onEditProfile: () => void;}) {
   return (
     <div className="w-full flex flex-col">
       <div className="relative w-full rounded-xl overflow-hidden shadow bg-white ring-1 ring-black ring-opacity-5">
@@ -21,7 +21,6 @@ function ProfileCard({ user }: { user: any }) {
           <div className="absolute -bottom-12 w-full">
             <div className="p-4 w-full flex justify-between items-end">
               <Avatar
-                // bordered
                 rounded
                 size={"lg"}
                 color={"pink"}
@@ -36,7 +35,7 @@ function ProfileCard({ user }: { user: any }) {
           <div className="p-4 flex flex-col md:flex-row md:justify-between md:items-center">
             <div className="mt-8 flex-1 flex flex-col">
               <h6 className="text-3xl font-medium text-gray-700">
-                {user.firstname + user.lastname}
+                {user.firstname + " " + user.lastname}
               </h6>
               <span className="text-sm font-medium text-gray-500">
                 @{user.username}sdfs
@@ -89,7 +88,13 @@ function ProfileCard({ user }: { user: any }) {
               {user?.tags?.length > 0 && <ProfileTags tags={user?.tags} />}
             </div>
 
-            <Button className="mt-2 md:mt-0">Edit Profile</Button>
+            <Button
+              type="button"
+              className="mt-2 md:mt-0"
+              onClick={onEditProfile}
+            >
+              Edit Profile
+            </Button>
           </div>
         </div>
       </div>

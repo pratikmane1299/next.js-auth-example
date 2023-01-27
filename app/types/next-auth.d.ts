@@ -12,6 +12,13 @@ declare module "next-auth" {
 			lastname: string;
 			avatarUrl: string;
 			username: string;
+			github?: {
+				enabled: boolean;
+				id: string;
+				username: string;
+				link: string;
+				accessToken: string;
+			}
     } & DefaultSession["user"];
   }
 }

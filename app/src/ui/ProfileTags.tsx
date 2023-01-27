@@ -4,7 +4,7 @@ import ProfileTag from './ProfileTag';
 
 function ProfileTags({tags}: {tags: string[]}) {
   return (
-    <div className="mt-3 inline-flex flex-wrap space-x-2">
+    <div className="mt-4 inline-flex flex-wrap gap-2">
       {tags?.map((tag, idx) => (
         <ProfileTag key={idx} tag={tag} />
       ))}

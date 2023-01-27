@@ -67,12 +67,12 @@ export default async function main() {
       });
     }
 
-		const avatarUrl = getAvatarUrl(email);
-		const username = generateUsername(email.split("@")[0]);
+    const avatarUrl = getAvatarUrl(email);
+    const username = generateUsername(email.split("@")[0]);
 
     const user = await User.create({
       email,
-			username,
+      username,
       password,
       avatarUrl,
     });
@@ -109,24 +109,20 @@ export default async function main() {
 
       // check if user exists, if not return...
       if (!user)
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Email or password doesn't exists",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Email or password doesn't exists",
+        });
 
       // compare passwords...
       const match = await user.comparePasswords(String(password).trim());
 
       // if passowrds don't match return...
       if (!match) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Email or password doesn't exists",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Email or password doesn't exists",
+        });
       }
 
       const tokens = await generateTokens(user);
@@ -205,9 +201,9 @@ export default async function main() {
   >("/api/v1/auth/github", async function (req: Request, res: Response) {
     const { providerAccountId, accessToken, tokenType, scope } = req.body;
 
-		const emails = await getGithubEmail(accessToken);
+    const emails = await getGithubEmail(accessToken);
 
-		const primaryEmail = emails?.find(
+    const primaryEmail = emails?.find(
       (email: {
         email: string;
         verified: boolean;
@@ -216,35 +212,34 @@ export default async function main() {
       }) => email?.primary && email?.verified
     );
 
-		const githubUser = await getGithubUser(accessToken);
+    const githubUser = await getGithubUser(accessToken);
 
-		let user = await User.findOne({
-			email: primaryEmail?.email
-		});
+    let user = await User.findOne({
+      email: primaryEmail?.email,
+    });
 
-		const transformedGithubUser = {
-			enabled: true,
-			id: githubUser.id,
-			username: githubUser?.login,
-			link: githubUser?.html_url,
-			accessToken,
-		}
+    const transformedGithubUser = {
+      enabled: true,
+      id: githubUser.id,
+      username: githubUser?.login,
+      link: githubUser?.html_url,
+      accessToken,
+    };
 
-		if (user) {
-			user.github = transformedGithubUser;
-			await user.save();
-			
-		} else {
-			user = await User.create({
-				username: githubUser?.login,
-				email: primaryEmail?.email,
-				avatarUrl: githubUser?.avatar_url,
-				verified: true,
-				github: transformedGithubUser,
-			});
-		}
+    if (user) {
+      user.github = transformedGithubUser;
+      await user.save();
+    } else {
+      user = await User.create({
+        username: githubUser?.login,
+        email: primaryEmail?.email,
+        avatarUrl: githubUser?.avatar_url,
+        verified: true,
+        github: transformedGithubUser,
+      });
+    }
 
-		const tokens = await generateTokens(user);
+    const tokens = await generateTokens(user);
 
     return res.json({
       success: true,
@@ -252,22 +247,22 @@ export default async function main() {
     });
   });
 
-	app.post(
+  app.post(
     "/api/v1/auth/logout",
     isAuthenticated,
     async (req: Request, res: Response) => {
       const userId = req.userId;
 
-			await User.findByIdAndUpdate(userId, {
+      await User.findByIdAndUpdate(userId, {
         accessToken: null,
         refreshToken: null,
       });
 
-			res.json({ success: true });
+      res.json({ success: true });
     }
   );
 
-	app.post<
+  app.post<
     {},
     {},
     {
@@ -275,7 +270,7 @@ export default async function main() {
       lastname: string;
       bio: string;
       tags: string;
-			website: string;
+      website: string;
       socials: { instagram: string; twitter: string; facebook: string };
     }
   >(
@@ -283,10 +278,17 @@ export default async function main() {
     isAuthenticated,
     async (req: Request, res: Response) => {
       const userId = req.userId;
-      const { firstname, lastname, bio, tags, website, socials = {} } = req.body;
-    
-			try {
-				await User.findByIdAndUpdate(userId, {
+      const {
+        firstname,
+        lastname,
+        bio,
+        tags,
+        website,
+        socials = {},
+      } = req.body;
+
+      try {
+        await User.findByIdAndUpdate(userId, {
           $set: {
             firstname,
             lastname,
@@ -298,40 +300,40 @@ export default async function main() {
           },
         });
 
-				return res.json({ success: true });
-			} catch (error) {
-				return res.json({ success: false });
-			}
+        return res.json({ success: true });
+      } catch (error) {
+        return res.json({ success: false });
+      }
     }
   );
 
-	app.get<{ username: string }>(
+  app.get<{ username: string }>(
     "/api/v1/github/:username/repos/",
     async (req, res) => {
-			const { username } = req.params;
-			try {
-				const user = await User.findOne({ "github.username": username });
-	
-				if (!user) {
-					return res
-						.status(404)
-						.json({ success: false, message: "User not found" });
-				}
-	
-				if (user?.github && user?.github?.accessToken) {
-					const repos = await getUserRepos(username, user?.github?.accessToken);
-	
-					return res.json({ success: true, data: { repos } });
-				}
-	
-				return res.json({ success: false, data: { repos: [] } });
-			} catch (error) {
-				console.log('error - ', error);
-			}
-		}
+      const { username } = req.params;
+      try {
+        const user = await User.findOne({ "github.username": username });
+
+        if (!user) {
+          return res
+            .status(404)
+            .json({ success: false, message: "User not found" });
+        }
+
+        if (user?.github && user?.github?.accessToken) {
+          const repos = await getUserRepos(username, user?.github?.accessToken);
+
+          return res.json({ success: true, data: { repos } });
+        }
+
+        return res.json({ success: false, data: { repos: [] } });
+      } catch (error) {
+        console.log("error - ", error);
+      }
+    }
   );
 
-	app.patch<
+  app.patch<
     any,
     any,
     {
@@ -339,33 +341,44 @@ export default async function main() {
       lastname: string;
       bio: string;
       website: string;
-			tags: string;
+      tags: string;
       socials: {
         twitter: string;
         instagram: string;
       };
     }
-  >("/api/v1/update-profile", isAuthenticated, async (req: Request, res: Response) => {
-		const userId = req.userId;
-		const { firstname, lastname, bio, website, tags, socials = {} } = req.body;
+  >(
+    "/api/v1/update-profile",
+    isAuthenticated,
+    async (req: Request, res: Response) => {
+      const userId = req.userId;
+      const {
+        firstname,
+        lastname,
+        bio,
+        website,
+        tags,
+        socials = {},
+      } = req.body;
 
-		try {
-			await User.findByIdAndUpdate(userId, {
-        $set: {
-          firstname,
-          lastname,
-          bio,
-          website,
-          socials,
-          tags: tags?.split(","),
-        },
-      });
+      try {
+        await User.findByIdAndUpdate(userId, {
+          $set: {
+            firstname,
+            lastname,
+            bio,
+            website,
+            socials,
+            tags: tags?.split(","),
+          },
+        });
 
-			res.json({ success: true });
-		} catch (error) {
-			return res.json({ success: false });
-		}
-	});
+        res.json({ success: true });
+      } catch (error) {
+        return res.json({ success: false });
+      }
+    }
+  );
 
   app.listen(PORT, () =>
     console.log(`server running on port http://localhost:${PORT}/`)
