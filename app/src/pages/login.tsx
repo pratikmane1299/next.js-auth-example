@@ -12,9 +12,7 @@ import Link from "next/link";
 import { Button, Label, Spinner, TextInput } from "flowbite-react";
 
 import GithubLoginButton from "@/ui/GithubLoginButton";
-import Card from "@/ui/Card";
 import CardTitle from "@/ui/CardTitle";
-import PaddedContainer from "@/ui/PaddedContainer";
 import PaddedCard from "@/ui/PaddedCard";
 
 function Login({

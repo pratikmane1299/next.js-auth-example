@@ -21,14 +21,14 @@ export default function App(
   }: { Component: NextApplicationPage; pageProps: any } = props;
 
   return (
-    <SessionProvider session={session}>
-      {/* {Component.requireAuth ? (
+    <SessionProvider session={session} baseUrl="/profile">
+      {Component.requireAuth ? (
         <AuthGuard>
           <Component {...pageProps} />
         </AuthGuard>
-      ) : ( */}
-      <Component {...pageProps} />
-      {/* )} */}
+      ) : (
+        <Component {...pageProps} />
+      )}
     </SessionProvider>
   );
 }

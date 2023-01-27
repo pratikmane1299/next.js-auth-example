@@ -39,11 +39,11 @@ function Navbar() {
                 inline={true}
                 label={
                   <Avatar
-                    bordered
                     color="pink"
                     alt={`${session?.user?.firstname} ${session?.user?.lastname}`}
                     img={session?.user?.avatarUrl}
                     rounded={true}
+										className="p-0 border-2 border-pink-600 rounded-full"
                   />
                 }
               >

@@ -3,6 +3,9 @@ import { CalendarIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 
 import { Avatar, Button } from "flowbite-react";
 import ProfileTags from "./ProfileTags";
+import TwitterIcon from "./TwitterIcon";
+import InstagramIcon from "./InstagramIcon";
+import ExternalLink from "@/components/ExternalLink";
 
 function ProfileCard({ user }: { user: any }) {
   return (
@@ -18,13 +21,13 @@ function ProfileCard({ user }: { user: any }) {
           <div className="absolute -bottom-12 w-full">
             <div className="p-4 w-full flex justify-between items-end">
               <Avatar
-                bordered
+                // bordered
                 rounded
                 size={"lg"}
                 color={"pink"}
                 img={user.avatarUrl}
                 alt={user.firstname + user.lastname}
-                className="p-0"
+                className="p-0 border-2 border-pink-600 rounded-full"
               />
             </div>
           </div>
@@ -43,23 +46,44 @@ function ProfileCard({ user }: { user: any }) {
                 {user.bio}
               </p>
 
-              <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-x-2">
+              <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-2">
                 <span className="flex items-center text-gray-700 font-medium text-xs">
                   <CalendarIcon className="h-5 w-5 mr-1" />
                   Joined 24 Aug 2023
                 </span>
 
-                <span className="flex items-center text-blue-600 font-medium text-xs">
-                  <GlobeAltIcon className="h-5 w-5 mr-1" />
-                  <a
-                    href="www.website.com"
-                    target={"_blank"}
-                    rel="noreferrer;nofollow"
-                    className="text-blue-600 underline text-xs font-medium"
+                {user?.website && (
+                  <span className="flex items-center text-blue-600 font-medium text-xs">
+                    <GlobeAltIcon className="h-5 w-5 mr-1" />
+                    <a
+                      href={user?.website}
+                      target={"_blank"}
+                      rel="noreferrer;nofollow"
+                      className="text-blue-600 underline text-xs font-medium"
+                    >
+                      {user?.website}
+                    </a>
+                  </span>
+                )}
+
+                {user?.socials?.twitter && (
+                  <ExternalLink
+                    href={`https://twitter.com/${user?.socials?.twitter}`}
+                    className="flex items-center text-gray-700 font-medium text-xs cursor-pointer hover:underline"
                   >
-                    www.website.com
-                  </a>
-                </span>
+                    <TwitterIcon className="h-5 w-5 mr-1 text-gray-700" />
+                    Twitter
+                  </ExternalLink>
+                )}
+                {user?.socials?.instagram && (
+                  <ExternalLink
+                    href={`https://www.instagram.com/${user?.socials?.instagram}`}
+                    className="flex items-center text-gray-700 font-medium text-xs cursor-pointer hover:underline"
+                  >
+                    <InstagramIcon className="h-5 w-5 mr-1 text-gray-700" />
+                    Instagram
+                  </ExternalLink>
+                )}
               </div>
 
               {user?.tags?.length > 0 && <ProfileTags tags={user?.tags} />}

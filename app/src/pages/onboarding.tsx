@@ -15,15 +15,17 @@ import api from "@/lib/axios";
 
 import CardTitle from "@/ui/CardTitle";
 import PaddedCard from "@/ui/PaddedCard";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
-function OnBoarding({ csrfToken }: { csrfToken: string }) {
+const OnBoarding = ({ csrfToken }: { csrfToken: string }) => {
   const router = useRouter();
   const [onboardingForm, setOnBoardingForm] = useState({
     firstname: "",
     lastname: "",
     bio: "",
     website: "",
-		tags: "",
+    tags: "",
     socials: {
       twitter: "",
       instagram: "",
@@ -215,12 +217,30 @@ function OnBoarding({ csrfToken }: { csrfToken: string }) {
           </form>
         </PaddedCard>
       </div>
+      destination: "/login",
     </div>
   );
-}
+};
+
+OnBoarding.requireAuth = true;
 
 export async function getServerSideProps(context: NextPageContext) {
   const csrfToken = await getCsrfToken(context);
+
+  const session = await unstable_getServerSession(
+    context.req,
+    context?.res,
+    authOptions
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
   return { props: { csrfToken } };
 }
