@@ -14,6 +14,7 @@ import {
 import api from "@/lib/axios";
 
 import CardTitle from "@/ui/CardTitle";
+import PaddedCard from "@/ui/PaddedCard";
 
 function OnBoarding({ csrfToken }: { csrfToken: string }) {
   const router = useRouter();
@@ -21,7 +22,7 @@ function OnBoarding({ csrfToken }: { csrfToken: string }) {
     firstname: "",
     lastname: "",
     bio: "",
-		website: "",
+    website: "",
     socials: {
       twitter: "",
       instagram: "",
@@ -78,132 +79,126 @@ function OnBoarding({ csrfToken }: { csrfToken: string }) {
       }}
     >
       <div className="w-full max-w-md">
-        <div className="rounded-xl shadow ring-1 ring-black ring-opacity-5 bg-white">
-          <div className="p-4">
-            <CardTitle title="Fill in some details first," classes="mb-10" />
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <input
-                name="csrfToken"
-                type={"hidden"}
-                defaultValue={csrfToken}
-              />
-              <div className="grid grid-cols-2 gap-x-3">
-                <div>
-                  <div className="mb-2 block">
-                    <Label htmlFor="firstname" value="Firstname" />
-                  </div>
-                  <TextInput
-                    id="firstname"
-                    name="firstname"
-                    type="text"
-                    value={onboardingForm.firstname}
-                    onChange={handleChange}
-                    required={true}
-                  />
-                </div>
-                <div>
-                  <div className="mb-2 block">
-                    <Label htmlFor="lastname" value="Lastname" />
-                  </div>
-                  <TextInput
-                    id="lastname"
-                    name="lastname"
-                    type="text"
-                    value={onboardingForm.lastname}
-                    onChange={handleChange}
-                    required={true}
-                  />
-                </div>
-              </div>
+        <PaddedCard>
+          <CardTitle title="Fill in some details first," classes="mb-10" />
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <input name="csrfToken" type={"hidden"} defaultValue={csrfToken} />
+            <div className="grid grid-cols-2 gap-x-3">
               <div>
                 <div className="mb-2 block">
-                  <Label htmlFor="bio">Bio</Label>
-                </div>
-                <Textarea
-                  id="bio"
-									name="bio"
-                  placeholder="Write something about yourself..."
-                  required={true}
-                  rows={4}
-                  value={onboardingForm.bio}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="website">Website</Label>
+                  <Label htmlFor="firstname" value="Firstname" />
                 </div>
                 <TextInput
-                  id="website"
-                  name="website"
-									placeholder="www.mycoolsite.com"
-                  value={onboardingForm.website}
+                  id="firstname"
+                  name="firstname"
+                  type="text"
+                  value={onboardingForm.firstname}
                   onChange={handleChange}
+                  required={true}
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-x-3">
-                <div>
-                  <div className="mb-2 block">
-                    <Label htmlFor="twitter">Twitter</Label>
-                  </div>
-                  <TextInput
-                    id="twitter"
-                    name="twitter"
-                    value={onboardingForm.socials.twitter}
-										helperText="Only enter valid username"
-                    onChange={(e) => {
-                      const { value } = e.target;
-
-                      setOnBoardingForm((prev) => ({
-                        ...prev,
-                        socials: {
-                          ...prev.socials,
-                          twitter: value,
-                        },
-                      }));
-                    }}
-                  />
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="lastname" value="Lastname" />
                 </div>
-                <div>
-                  <div className="mb-2 block">
-                    <Label htmlFor="instagram">Instagram</Label>
-                  </div>
-                  <TextInput
-                    id="instagram"
-                    name="instagram"
-										helperText="Only enter valid username"
-                    value={onboardingForm.socials.instagram}
-                    onChange={(e) => {
-                      const { value } = e.target;
+                <TextInput
+                  id="lastname"
+                  name="lastname"
+                  type="text"
+                  value={onboardingForm.lastname}
+                  onChange={handleChange}
+                  required={true}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="bio">Bio</Label>
+              </div>
+              <Textarea
+                id="bio"
+                name="bio"
+                placeholder="Write something about yourself..."
+                required={true}
+                rows={4}
+                value={onboardingForm.bio}
+                onChange={handleChange}
+              />
+            </div>
 
-                      setOnBoardingForm((prev) => ({
-                        ...prev,
-                        socials: {
-                          ...prev.socials,
-                          instagram: value,
-                        },
-                      }));
-                    }}
-                  />
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="website">Website</Label>
+              </div>
+              <TextInput
+                id="website"
+                name="website"
+                placeholder="www.mycoolsite.com"
+                value={onboardingForm.website}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-3">
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="twitter">Twitter</Label>
                 </div>
-              </div>
+                <TextInput
+                  id="twitter"
+                  name="twitter"
+                  value={onboardingForm.socials.twitter}
+                  helperText="Only enter valid username"
+                  onChange={(e) => {
+                    const { value } = e.target;
 
-              <div className="flex justify-end">
-                <Button type="submit">
-                  {isSaving ? (
-                    <div className="mr-3">
-                      <Spinner size="sm" light={true} />
-                    </div>
-                  ) : (
-                    `Let's begin...`
-                  )}
-                </Button>
+                    setOnBoardingForm((prev) => ({
+                      ...prev,
+                      socials: {
+                        ...prev.socials,
+                        twitter: value,
+                      },
+                    }));
+                  }}
+                />
               </div>
-            </form>
-          </div>
-        </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="instagram">Instagram</Label>
+                </div>
+                <TextInput
+                  id="instagram"
+                  name="instagram"
+                  helperText="Only enter valid username"
+                  value={onboardingForm.socials.instagram}
+                  onChange={(e) => {
+                    const { value } = e.target;
+
+                    setOnBoardingForm((prev) => ({
+                      ...prev,
+                      socials: {
+                        ...prev.socials,
+                        instagram: value,
+                      },
+                    }));
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <Button type="submit">
+                {isSaving ? (
+                  <div className="mr-3">
+                    <Spinner size="sm" light={true} />
+                  </div>
+                ) : (
+                  `Let's begin...`
+                )}
+              </Button>
+            </div>
+          </form>
+        </PaddedCard>
       </div>
     </div>
   );

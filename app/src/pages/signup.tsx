@@ -9,9 +9,11 @@ import {
 } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Button, Card, Label, Spinner, TextInput } from "flowbite-react";
+import { Button, Label, Spinner, TextInput } from "flowbite-react";
+
 import GithubLoginButton from "@/ui/GithubLoginButton";
 import CardTitle from "@/ui/CardTitle";
+import PaddedCard from "@/ui/PaddedCard";
 
 function Signup({
   csrfToken,
@@ -77,16 +79,16 @@ function Signup({
       }}
     >
       <div className="w-full max-w-sm">
-        <Card>
-					<CardTitle title="Create a account" classes="mb-10" />
-          {/* <h6 className="mb-10 text-2xl font-medium text-gray-700">
-            Create a account
-          </h6> */}
+        <PaddedCard>
+          <CardTitle title="Create a account" classes="mb-10" />
           <div className="my-4 flex flex-col w-full">
             {Object.values(providers).map((provider) => {
               if (provider.id === "github") {
                 return (
-                  <GithubLoginButton onClick={() => signIn(provider.id)} />
+                  <GithubLoginButton
+                    key={provider.id}
+                    onClick={() => signIn(provider.id)}
+                  />
                 );
               }
             })}
@@ -150,7 +152,7 @@ function Signup({
               </Link>
             </span>
           </div>
-        </Card>
+        </PaddedCard>
       </div>
     </div>
   );
