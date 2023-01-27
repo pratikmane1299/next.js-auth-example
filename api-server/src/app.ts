@@ -275,6 +275,7 @@ export default async function main() {
       lastname: string;
       bio: string;
       tags: string[];
+			website: string;
       socials: { instagram: string; twitter: string; facebook: string };
     }
   >(
@@ -282,7 +283,7 @@ export default async function main() {
     isAuthenticated,
     async (req: Request, res: Response) => {
       const userId = req.userId;
-      const { firstname, lastname, bio, tags, socials = {} } = req.body;
+      const { firstname, lastname, bio, tags, website, socials = {} } = req.body;
     
 			try {
 				await User.findByIdAndUpdate(userId, {
@@ -292,7 +293,8 @@ export default async function main() {
             bio,
             tags,
             socials,
-						onboardingDone: true,
+            website,
+            onboardingDone: true,
           },
         });
 

@@ -11,6 +11,7 @@ interface IUser {
   avatarUrl?: string;
   bio?: string;
   tags?: string[];
+	website?: string;
   verified?: boolean;
   socials?: {
     twitter?: string;
@@ -50,6 +51,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
     required: false,
     default: { twitter: "", instagram: "", facebook: "" },
   },
+  website: { type: String, required: false },
   verified: { type: Boolean, default: false },
   accessToken: { type: String, required: false },
   refreshToken: { type: String, required: false },
