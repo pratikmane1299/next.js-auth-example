@@ -9,6 +9,9 @@ import {
 import { useRouter } from "next/router";
 import { Provider } from "next-auth/providers";
 import Link from "next/link";
+import { Button, Card, Label, Spinner, TextInput } from "flowbite-react";
+import GithubLogo from "@/ui/GithubLogo";
+import GithubLoginButton from "@/ui/GithubLoginButton";
 
 function Login({
   csrfToken,
@@ -23,16 +26,17 @@ function Login({
     password: "",
   });
   const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   useEffect(() => {
     if (status === "authenticated") {
-			if (!data?.user?.onboardingDone) {
-				router.push("/onboarding");
-			} else {
-				router.push("/profile");
-			}
+      if (!data?.user?.onboardingDone) {
+        router.push("/onboarding");
+      } else {
+        router.push("/profile");
+      }
     }
   }, [status]);
 
@@ -47,6 +51,7 @@ function Login({
 
   async function handleOnLogin(e: FormEvent) {
     e.preventDefault();
+		setLoading(true);
 
     const res = await signIn("credentials", {
       email: loginForm.email,
@@ -55,11 +60,11 @@ function Login({
       redirect: false,
     });
 
+		setLoading(false);
+
     if (!res?.ok && res?.error) {
       return setError(res?.error);
     }
-
-    // router.push("/profile");
   }
 
   return (
@@ -73,66 +78,81 @@ function Login({
         background: "#eee",
       }}
     >
-      <div
-        style={{
-          width: "350px",
-          display: "flex",
-          flexDirection: "column",
-          border: "1px solid red",
-          padding: "1rem",
-          background: "#fff",
-          borderRadius: "8px",
-        }}
-      >
-        <div
-          style={{
-            marginBottom: "1rem",
-          }}
-        >
-          {Object.values(providers).map((provider) => {
-            if (provider.id !== "credentials") {
-              return (
-                <div key={provider.name}>
-                  <button onClick={() => signIn(provider.id)}>
-                    Sign in with {provider.name}
-                  </button>
-                </div>
-              );
-            }
-          })}
-        </div>
+      <div className="w-full max-w-sm">
+        <Card>
+          <h6 className="mb-10 text-2xl font-medium text-gray-700">
+            Welcome back
+          </h6>
+          <div className="my-4 flex flex-col w-full">
+            {Object.values(providers).map((provider) => {
+              if (provider.id === "github") {
+                return (
+                  <GithubLoginButton onClick={() => signIn(provider.id)} />
+                );
+              }
+            })}
+            <div className="mt-4 flex items-center justify-around">
+              <div className="w-full h-[1px] bg-gray-200" />
+              <span className="block px-2 text-sm font-normal text-gray-600">
+                or
+              </span>
+              <div className="w-full h-[1px] bg-gray-200" />
+            </div>
+          </div>
+          <form className="flex flex-col space-y-4" onSubmit={handleOnLogin}>
+            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="email" value="Email" />
+              </div>
+              <TextInput
+                id="email"
+                name="email"
+                type="text"
+                placeholder="name@domain.com"
+                value={loginForm.email}
+                onChange={handleChange}
+                required={true}
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="password" value="Password" />
+              </div>
+              <TextInput
+                id="password"
+                name="password"
+                type="password"
+                value={loginForm.password}
+                onChange={handleChange}
+                required={true}
+              />
+            </div>
 
-        <form onSubmit={handleOnLogin}>
-          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-          <label htmlFor="email">
-            Email
-            <input
-              id="email"
-              name="email"
-              type="text"
-              value={loginForm.email}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Password
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={loginForm.password}
-              onChange={handleChange}
-            />
-          </label>
-          <button type="submit">Login</button>
-        </form>
+            {error && (
+              <span className="text-xs font-medium text-red-600">{error}</span>
+            )}
 
-        {error && <span>{error}</span>}
-        <div>
-          <span>
-            Don't have an account ?<Link href={"/signup"}>Signup first</Link>
-          </span>
-        </div>
+            <Button type="submit" >
+							{loading ? (
+								<div className="mr-3">
+									<Spinner
+										size="sm"
+										light={true}
+									/>
+								</div>
+							) : 'Login'}
+						</Button>
+          </form>
+          <div className="mt-2">
+            <span className="text-sm font-normal text-gray-700">
+              Don't have an account ?{' '}
+              <Link className="text-blue-600" href={"/signup"}>
+                 Sign up here
+              </Link>
+            </span>
+          </div>
+        </Card>
       </div>
     </div>
   );

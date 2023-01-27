@@ -32,7 +32,6 @@ function Navbar() {
           <FBNavbar.Brand>
             <img alt="Full stack auth" />
           </FBNavbar.Brand>
-          <FBNavbar.Toggle />
           {session?.user ? (
             <div className="flex md:order-2">
               <Dropdown
@@ -62,10 +61,13 @@ function Navbar() {
               </Dropdown>
             </div>
           ) : (
-            <FBNavbar.Collapse>
-              <FBNavbar.Link href="/login">Login</FBNavbar.Link>
-              <FBNavbar.Link href="/signup">Sign Up</FBNavbar.Link>
-            </FBNavbar.Collapse>
+						<>
+							<FBNavbar.Toggle />
+							<FBNavbar.Collapse>
+								<FBNavbar.Link href="/login">Login</FBNavbar.Link>
+								<FBNavbar.Link href="/signup">Sign Up</FBNavbar.Link>
+							</FBNavbar.Collapse>
+						</>
           )}
         </div>
       </Container>

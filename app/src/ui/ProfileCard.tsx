@@ -29,7 +29,7 @@ function ProfileCard({ user }: { user: any }) {
           </div>
         </div>
         <div className="relative">
-          <div className="p-4 flex justify-between items-center">
+          <div className="p-4 flex flex-col md:flex-row md:justify-between md:items-center">
             <div className="mt-8 flex-1 flex flex-col">
               <h6 className="text-3xl font-medium text-gray-700">
                 {user.firstname + user.lastname}
@@ -42,7 +42,7 @@ function ProfileCard({ user }: { user: any }) {
                 {user.bio}
               </p>
 
-              <div className="mt-4 flex items-center space-x-2">
+              <div className="mt-4 flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-x-2">
                 <span className="flex items-center text-gray-700 font-medium text-xs">
                   <CalendarIcon className="h-5 w-5 mr-1" />
                   Joined 24 Aug 2023
@@ -64,7 +64,7 @@ function ProfileCard({ user }: { user: any }) {
               </div>
             </div>
 
-            <Button>Edit Profile</Button>
+            <Button className="mt-2 md:mt-0">Edit Profile</Button>
           </div>
         </div>
       </div>

@@ -1,9 +1,16 @@
-
-import React, { ChangeEvent, useEffect, useState } from "react";import { NextPageContext } from "next";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { NextPageContext } from "next";
 import { Provider } from "next-auth/providers";
-import { getCsrfToken, getProviders, signIn, useSession } from "next-auth/react";
+import {
+  getCsrfToken,
+  getProviders,
+  signIn,
+  useSession,
+} from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Button, Card, Label, Spinner, TextInput } from "flowbite-react";
+import GithubLoginButton from "@/ui/GithubLoginButton";
 
 function Signup({
   csrfToken,
@@ -12,21 +19,22 @@ function Signup({
   csrfToken: string;
   providers: Provider[];
 }) {
-	const router = useRouter();
-	const { status, data } = useSession();
+  const router = useRouter();
+  const { status, data } = useSession();
   const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
+  useEffect(() => {
     if (status === "authenticated") {
-			if (!data?.user?.onboardingDone) {
-				router.push("/onboarding");
-			} else {
-				router.push("/profile");
-			}
+      if (!data?.user?.onboardingDone) {
+        router.push("/onboarding");
+      } else {
+        router.push("/profile");
+      }
     }
   }, [status]);
 
@@ -39,8 +47,9 @@ function Signup({
     }));
   }
 
-	async function handleSignup(e: React.FormEvent) {
+  async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
 
     const res = await signIn("signup", {
       email: signUpForm.email,
@@ -48,12 +57,11 @@ function Signup({
       csrfToken,
       redirect: false,
     });
+    setLoading(false);
 
     if (!res?.ok && res?.error) {
       return setError(res?.error);
     }
-
-    // router.push("/profile");
   }
 
   return (
@@ -67,67 +75,80 @@ function Signup({
         background: "#eee",
       }}
     >
-      <div
-        style={{
-          width: "350px",
-          display: "flex",
-          flexDirection: "column",
-          border: "1px solid red",
-          padding: "1rem",
-          background: "#fff",
-          borderRadius: "8px",
-        }}
-      >
-        <div
-          style={{
-            marginBottom: "1rem",
-          }}
-        >
-          {Object.values(providers).map((provider) => {
-            if (provider.id !== "credentials") {
-              return (
-                <div key={provider.name}>
-                  <button onClick={() => signIn(provider.id)}>
-                    Sign up with {provider.name}
-                  </button>
+      <div className="w-full max-w-sm">
+        <Card>
+          <h6 className="mb-10 text-2xl font-medium text-gray-700">
+            Create a account
+          </h6>
+          <div className="my-4 flex flex-col w-full">
+            {Object.values(providers).map((provider) => {
+              if (provider.id === "github") {
+                return (
+                  <GithubLoginButton onClick={() => signIn(provider.id)} />
+                );
+              }
+            })}
+            <div className="mt-4 flex items-center justify-around">
+              <div className="w-full h-[1px] bg-gray-200" />
+              <span className="block px-2 text-sm font-normal text-gray-600">
+                or
+              </span>
+              <div className="w-full h-[1px] bg-gray-200" />
+            </div>
+          </div>
+          <form className="flex flex-col space-y-4" onSubmit={handleSignup}>
+            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="email" value="Email" />
+              </div>
+              <TextInput
+                id="email"
+                name="email"
+                type="text"
+                placeholder="name@domain.com"
+                value={signUpForm.email}
+                onChange={handleChange}
+                required={true}
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="password" value="Password" />
+              </div>
+              <TextInput
+                id="password"
+                name="password"
+                type="password"
+                value={signUpForm.password}
+                onChange={handleChange}
+                required={true}
+              />
+            </div>
+
+            {error && (
+              <span className="text-xs font-medium text-red-600">{error}</span>
+            )}
+
+            <Button type="submit">
+              {loading ? (
+                <div className="mr-3">
+                  <Spinner size="sm" light={true} />
                 </div>
-              );
-            }
-          })}
-        </div>
-
-        <form onSubmit={handleSignup}>
-          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-          <label htmlFor="email">
-            Email
-            <input
-              id="email"
-              name="email"
-              type="text"
-              value={signUpForm.email}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Password
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={signUpForm.password}
-              onChange={handleChange}
-            />
-          </label>
-          <button type="submit">Sign Up</button>
-        </form>
-
-        {error && <span>{error}</span>}
-
-        <div>
-          <span>
-            Already have an account ?<Link href={"/login"}>Login instead</Link>
-          </span>
-        </div>
+              ) : (
+                "Create account"
+              )}
+            </Button>
+          </form>
+          <div className="mt-2">
+            <span className="text-sm font-normal text-gray-700">
+              Already have an account ?{" "}
+              <Link className="text-blue-600" href={"/login"}>
+                Login
+              </Link>
+            </span>
+          </div>
+        </Card>
       </div>
     </div>
   );

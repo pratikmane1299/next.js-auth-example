@@ -14,12 +14,14 @@ const Profile = ({ user }: { user: any }) => {
 	const [isFetchingRepos, setIsFetching] = useState(false);
 
 	useEffect(() => {
-		setIsFetching(true);
-		getGithubRepos(user?.github?.username)
-      .then((data: any) => {
-        setRepos(data?.repos);
-      })
-      .finally(() => setIsFetching(false));
+		if (user?.github?.username) {
+			setIsFetching(true);
+			getGithubRepos(user?.github?.username)
+				.then((data: any) => {
+					setRepos(data?.repos);
+				})
+				.finally(() => setIsFetching(false));
+		}
 	}, []);
 
   return (
@@ -34,9 +36,11 @@ const Profile = ({ user }: { user: any }) => {
         }}
       >
         <ProfileCard user={user} />
-				<div className="mt-5">
-					<GithubRepos repos={repos} />
-				</div>
+				{user?.github?.enabled && (
+					<div className="mt-5">
+						<GithubRepos repos={repos} />
+					</div>
+				)}
       </div>
     </Layout>
   );
