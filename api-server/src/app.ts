@@ -10,7 +10,7 @@ import { isAuthenticated } from "./middlewares/auth";
 
 import User from "./models/user";
 import { verify } from "jsonwebtoken";
-import { getGithubEmail, getGithubUser } from "./utils/github";
+import { getGithubEmail, getGithubUser, getUserRepos } from "./utils/github";
 import { getAvatarUrl } from "./utils/avatar";
 import { generateUsername } from "./utils/utils";
 
@@ -301,6 +301,32 @@ export default async function main() {
 				return res.json({ success: false });
 			}
     }
+  );
+
+	app.get<{ username: string }>(
+    "/api/v1/github/:username/repos/",
+    async (req, res) => {
+			const { username } = req.params;
+			try {
+				const user = await User.findOne({ "github.username": username });
+	
+				if (!user) {
+					return res
+						.status(404)
+						.json({ success: false, message: "User not found" });
+				}
+	
+				if (user?.github && user?.github?.accessToken) {
+					const repos = await getUserRepos(username, user?.github?.accessToken);
+	
+					return res.json({ success: true, data: { repos } });
+				}
+	
+				return res.json({ success: false, data: { repos: [] } });
+			} catch (error) {
+				console.log('error - ', error);
+			}
+		}
   );
 
   app.listen(PORT, () =>

@@ -8,6 +8,10 @@ declare module "next-auth" {
     user: {
       /** Flag to check if onboarding process in completed */
       onboardingDone: boolean;
+			firstname: string;
+			lastname: string;
+			avatarUrl: string;
+			username: string;
     } & DefaultSession["user"];
   }
 }

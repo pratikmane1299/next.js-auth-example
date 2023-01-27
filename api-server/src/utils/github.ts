@@ -18,3 +18,13 @@ export const getGithubEmail = (accessToken: string) => {
 		}
 	}).then((res) => res.data);
 }
+
+export const getUserRepos = (username: string, accessToken: string) => {
+	return axios
+    .get(`${process.env.GITHUB_API_BASE_URL}/users/${username}/repos?type=owner`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((res) => res.data);
+}
