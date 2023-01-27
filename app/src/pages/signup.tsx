@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button, Card, Label, Spinner, TextInput } from "flowbite-react";
 import GithubLoginButton from "@/ui/GithubLoginButton";
+import CardTitle from "@/ui/CardTitle";
 
 function Signup({
   csrfToken,
@@ -77,9 +78,10 @@ function Signup({
     >
       <div className="w-full max-w-sm">
         <Card>
-          <h6 className="mb-10 text-2xl font-medium text-gray-700">
+					<CardTitle title="Create a account" classes="mb-10" />
+          {/* <h6 className="mb-10 text-2xl font-medium text-gray-700">
             Create a account
-          </h6>
+          </h6> */}
           <div className="my-4 flex flex-col w-full">
             {Object.values(providers).map((provider) => {
               if (provider.id === "github") {

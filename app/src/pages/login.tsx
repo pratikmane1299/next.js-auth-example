@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Button, Card, Label, Spinner, TextInput } from "flowbite-react";
 import GithubLogo from "@/ui/GithubLogo";
 import GithubLoginButton from "@/ui/GithubLoginButton";
+import CardTitle from "@/ui/CardTitle";
 
 function Login({
   csrfToken,
@@ -26,7 +27,7 @@ function Login({
     password: "",
   });
   const [error, setError] = useState("");
-	const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -51,7 +52,7 @@ function Login({
 
   async function handleOnLogin(e: FormEvent) {
     e.preventDefault();
-		setLoading(true);
+    setLoading(true);
 
     const res = await signIn("credentials", {
       email: loginForm.email,
@@ -60,7 +61,7 @@ function Login({
       redirect: false,
     });
 
-		setLoading(false);
+    setLoading(false);
 
     if (!res?.ok && res?.error) {
       return setError(res?.error);
@@ -80,9 +81,7 @@ function Login({
     >
       <div className="w-full max-w-sm">
         <Card>
-          <h6 className="mb-10 text-2xl font-medium text-gray-700">
-            Welcome back
-          </h6>
+          <CardTitle title="Welcome back" classes="mb-10" />
           <div className="my-4 flex flex-col w-full">
             {Object.values(providers).map((provider) => {
               if (provider.id === "github") {
@@ -133,22 +132,21 @@ function Login({
               <span className="text-xs font-medium text-red-600">{error}</span>
             )}
 
-            <Button type="submit" >
-							{loading ? (
-								<div className="mr-3">
-									<Spinner
-										size="sm"
-										light={true}
-									/>
-								</div>
-							) : 'Login'}
-						</Button>
+            <Button type="submit">
+              {loading ? (
+                <div className="mr-3">
+                  <Spinner size="sm" light={true} />
+                </div>
+              ) : (
+                "Login"
+              )}
+            </Button>
           </form>
           <div className="mt-2">
             <span className="text-sm font-normal text-gray-700">
-              Don't have an account ?{' '}
+              Don't have an account ?{" "}
               <Link className="text-blue-600" href={"/signup"}>
-                 Sign up here
+                Sign up here
               </Link>
             </span>
           </div>
