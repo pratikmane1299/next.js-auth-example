@@ -5,7 +5,7 @@ Next.js authentication with next auth and external backend.
 ## Getting Started
 
 ```sh
-	$ git clone https://github.com/pratikmane1299/next.js-auth-example.git
+  $ git clone https://github.com/pratikmane1299/next.js-auth-example.git
 ```
 
 ## Copy environtment variables
@@ -15,11 +15,11 @@ Create .env in app & api-server directories and copy variables from respective .
 ## Install dependencies
 
 ```sh
-	$ cd api-server
-	$ yarn
+  $ cd api-server
+  $ yarn
 
-	$ cd app
-	$ yarn
+  $ cd app
+  $ yarn
 ```
 
 ## Run application
@@ -27,11 +27,11 @@ Create .env in app & api-server directories and copy variables from respective .
 Start api
 
 ```sh
-	$ docker-compose up
+  $ docker-compose up
 ```
 
 Start next.js app
 
 ```sh
-	$ yarn dev
+  $ yarn dev
 ```
