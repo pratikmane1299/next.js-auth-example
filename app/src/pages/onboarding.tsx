@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { NextPageContext } from "next";
 import { getCsrfToken } from "next-auth/react";
+import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import {
   Button,
@@ -11,12 +12,12 @@ import {
   TextInput,
 } from "flowbite-react";
 
+import { authOptions } from "./api/auth/[...nextauth]";
 import api from "@/lib/axios";
 
 import CardTitle from "@/ui/CardTitle";
 import PaddedCard from "@/ui/PaddedCard";
-import { unstable_getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]";
+import Meta from "@/components/Meta";
 
 const OnBoarding = ({ csrfToken }: { csrfToken: string }) => {
   const router = useRouter();
@@ -77,6 +78,11 @@ const OnBoarding = ({ csrfToken }: { csrfToken: string }) => {
         background: "#eee",
       }}
     >
+      <Meta
+        title="Next Auth | Onboarding"
+        description="Fill in some basic details to create your profile"
+        canonicalUrl="/onboarding"
+      />
       <div className="w-full max-w-md">
         <PaddedCard>
           <CardTitle title="Fill in some details first," classes="mb-10" />

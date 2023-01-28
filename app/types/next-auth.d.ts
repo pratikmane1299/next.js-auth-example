@@ -12,6 +12,7 @@ declare module "next-auth" {
 			lastname: string;
 			avatarUrl: string;
 			username: string;
+			bio: string;
 			github?: {
 				enabled: boolean;
 				id: string;

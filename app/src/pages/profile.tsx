@@ -15,6 +15,7 @@ import EditProfileModal from "@/ui/EditProfileModal";
 import { updateProfile } from "@/api/profile";
 import { reloadSession } from "@/utils";
 import { AxiosError } from "axios";
+import Meta from "@/components/Meta";
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -70,6 +71,14 @@ const Profile = () => {
           alignItems: "center",
         }}
       >
+        <Meta
+          title={`${session?.user?.firstname} ${session?.user?.lastname} profile`}
+          description={
+            session?.user?.bio ||
+            `${session?.user?.firstname} ${session?.user?.lastname}'s profile`
+          }
+          canonicalUrl="/profiile"
+        />
         <ProfileCard
           user={session?.user}
           onEditProfile={() => toggleEditProfileModal(true)}

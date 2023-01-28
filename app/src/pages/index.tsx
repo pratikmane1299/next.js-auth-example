@@ -1,24 +1,21 @@
 import Head from "next/head";
+import Link from "next/link";
 import { Inter } from "@next/font/google";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 import Layout from "@/ui/Layout";
-import Link from "next/link";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import Meta from "@/components/Meta";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
     <Layout>
-      <Head>
-        <title>Next Auth | Custom server example</title>
-        <meta
-          name="description"
-          content="Full stack auth example with next auth & custom server."
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Meta
+        title="Next Auth | Custom Backend example"
+        description="Next.js authentication with next auth and external backend."
+        canonicalUrl="/"
+      />
       <main className="flex justify-center">
         <div className="flex flex-col items-center">
           <h1 className="mt-28 text-5xl font-normal text-gray-800 tracking-wider">

@@ -14,6 +14,7 @@ import { Button, Label, Spinner, TextInput } from "flowbite-react";
 import GithubLoginButton from "@/ui/GithubLoginButton";
 import CardTitle from "@/ui/CardTitle";
 import PaddedCard from "@/ui/PaddedCard";
+import Meta from "@/components/Meta";
 
 function Signup({
   csrfToken,
@@ -78,6 +79,11 @@ function Signup({
         background: "#eee",
       }}
     >
+      <Meta
+        title="Next Auth | Sign up"
+        description="Create your account by signing up via email/password or github"
+        canonicalUrl="/signup"
+      />
       <div className="w-full max-w-sm">
         <PaddedCard>
           <CardTitle title="Create a account" classes="mb-10" />
