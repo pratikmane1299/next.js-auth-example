@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { NextPageContext } from "next";
+import { GetServerSideProps } from "next";
 import { getCsrfToken } from "next-auth/react";
 import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
@@ -219,14 +219,13 @@ const OnBoarding = ({ csrfToken }: { csrfToken: string }) => {
           </form>
         </PaddedCard>
       </div>
-      destination: "/login",
     </div>
   );
 };
 
 OnBoarding.requireAuth = true;
 
-export async function getServerSideProps(context: NextPageContext) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const csrfToken = await getCsrfToken(context);
 
   const session = await unstable_getServerSession(

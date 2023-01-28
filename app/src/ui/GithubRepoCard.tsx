@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card } from 'flowbite-react';
 import { EyeIcon, ShareIcon, StarIcon } from '@heroicons/react/24/outline';
+import ExternalLink from '@/components/ExternalLink';
 
 function GithubRepoCard({ repo }: { repo: any }) {
   return (
@@ -16,14 +17,12 @@ function GithubRepoCard({ repo }: { repo: any }) {
           className="h-full w-full"
         />
         <div className="flex flex-col pl-2.5 py-2 pr-1.5">
-          <a
+          <ExternalLink
             className="text-base font-medium text-gray-700 underline cursor-pointer"
             href={repo.html_url}
-            target="_blank"
-            rel="noreferrer;nofollow"
           >
             {repo.name}
-          </a>
+          </ExternalLink>
           {repo.description && (
             <p className="mb-1 text-xs font-medium text-gray-500">
               description

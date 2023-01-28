@@ -58,14 +58,12 @@ function ProfileCard({ user, onEditProfile }: { user: any, onEditProfile: () => 
                 {user?.website && (
                   <span className="flex items-center text-blue-600 font-medium text-xs">
                     <GlobeAltIcon className="h-5 w-5 mr-1" />
-                    <a
+                    <ExternalLink
                       href={user?.website}
-                      target={"_blank"}
-                      rel="noreferrer;nofollow"
                       className="text-blue-600 underline text-xs font-medium"
                     >
                       {user?.website}
-                    </a>
+                    </ExternalLink>
                   </span>
                 )}
 

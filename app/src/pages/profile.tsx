@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { NextPageContext } from "next";
+import { GetServerSideProps } from "next";
 import { useSession } from "next-auth/react";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { toast } from 'react-toastify';
 
 import { getGithubRepos } from "@/api/github";
+import { updateProfile } from "@/api/profile";
+import { reloadSession } from "@/utils";
 
 import Layout from "@/ui/Layout";
 import ProfileCard from "@/ui/ProfileCard";
 import GithubRepos from "@/ui/GithubRepos";
-
-import EditProfileModal from "@/ui/EditProfileModal";
-import { updateProfile } from "@/api/profile";
-import { reloadSession } from "@/utils";
-import { AxiosError } from "axios";
 import Meta from "@/components/Meta";
+import EditProfileModal from "@/ui/EditProfileModal";
+
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -105,7 +104,7 @@ const Profile = () => {
 
 Profile.requireAuth = true;
 
-export async function getServerSideProps(context: NextPageContext) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const session = await unstable_getServerSession(
       context.req,
@@ -137,6 +136,6 @@ export async function getServerSideProps(context: NextPageContext) {
   } catch (error) {
     return { props: {} };
   }
-}
+};
 
 export default Profile;

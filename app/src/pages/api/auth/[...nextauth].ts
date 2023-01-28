@@ -154,20 +154,6 @@ export const authOptions: NextAuthOptions = {
 						session.user = userData.user;
 					}
 				}
-
-				// // const res = await fetch(`${process.env.NEXT_PUBLIC_CUSTOM_SERVER_URL}/api/v1/me` || "", {
-        // //   method: "GET",
-        // //   headers: {
-        // //     AccessToken: token?.accessToken,
-        // //     "Content-Type": "application/json",
-        // //   },
-        // // });
-
-				// // const data = await res.json();
-
-				
-				// return session;
-				// const res = await getCurrentUser(token?.accessToken);
 			} catch (error) {
 				session = null;
 				console.log('error - ', error);
